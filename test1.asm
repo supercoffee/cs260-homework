@@ -1,5 +1,5 @@
+# By Benjamin Daschel
 .data
-
 src: .asciiz "Hello world!"
 dest: .space 20
 newline: .asciiz "\n"
@@ -42,7 +42,7 @@ strncpy:
   # a0: dest
   # a1: src
   # a2: n bytes to copy
-  
+
   # t0: counter
   # t1: source or destination address
   # t2: temp register
