@@ -8,13 +8,6 @@ newline: .asciiz "\n"
 .globl main
 
 main:
-  # print source just to make sure program works
-  la $a0, src
-  li $v0, 4
-  syscall
-  la $a0, newline
-  syscall
-
   # perform copy of "Hello"
   la $a0, dest
   la $a1, src
@@ -49,20 +42,26 @@ strncpy:
   # a0: dest
   # a1: src
   # a2: n bytes to copy
-  move $t0, $a2 # copy n into counter to preserve original
-  move $t1, $a1 # current source
-  move $t2, $a0 # current destination
+  
+  # t0: counter
+  # t1: source or destination address
+  # t2: temp register
+  move $t0, $zero # init counter to 0
+
   strncpy_loop:
-    beqz $t0, strncpy_exit # return when counter = 0
+    beq $t0, $a2, strncpy_exit # return when counter = n
+    move $t1, $a1 # copy source address into register
+    add $t1, $t1, $t0 # add counter to source address (offset)
+    lb $t2, 0($t1) # load byte from source into temp register
 
-    lb $t4, 0($t1)
-    sb $t4, 0($t2)
-
-    addi $t1, $t1, 1 # move source pointer by 1
-    addi $t2, $t2, 1 # move destination pointer by 1
-    addi $t0, $t0, -1 # decrement counter
+    move $t1, $a0 # copy destination address to temp register
+    add $t1, $t1, $t0 # add counter to destination address
+    sb $t2, 0($t1) # store byte from temp to destination
+    addi $t0, $t0, 1 # increment counter
   j strncpy_loop
 
   strncpy_exit:
-    sb $zero, 0($t2) # append zero byte to destination
+    move $t1, $a0
+    add $t1, $t1, $t0
+    sb $zero, 0($t1) # append zero byte to destination
     jr $ra
