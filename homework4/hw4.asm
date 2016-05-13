@@ -5,7 +5,9 @@ name: .asciiz "\nBenjamin"
 .globl main
 
 main:
-  la $a0, name # load address of name into t0
+  la $t0, name # load address of name into t0
+  addi $sp, $sp, -4 # push address onto stack
+  sw $t0, 0($sp)
   jal print_r
 
   exit:
@@ -13,28 +15,30 @@ main:
     syscall
 
 print_r:
+  # arg @ sp +16
   # move stack pointer down and save registers
-  addi $sp, $sp, -8
-  sw $a0, 0($sp)
-  sw $ra, 4($sp)
-  # load src address from a0
-  lb $t0, ($a0)
+  addi $sp, $sp, -16
+  sw $ra, 4($sp) # save return address to stack
+  sw $s0, 8($sp)
+  sw $s1, 12($sp)
 
-  # return if loaded character is terminator
-  beqz $t0, base_case
-  addi $a0, $a0, 1 # increment string pointer by 1 byte
+  lw $s0, 16($sp) # load string address from stack
+  lb $s1, ($s0) # load byte from address into register
+
+  beqz $s1, base_case # return if loaded character is terminator
+  addi $s0, $s0, 1 # increment string pointer by 1 byte
+  sw $s0, 0($sp)
   jal print_r
-  addi $a0, $a0, -1 # decrement string pointer to restore it to what
-  # the current execution scope should be looking at
 
   # print a character
-  lb $a0, ($a0) # load character from address
+  move $a0, $s1 # load character from address again
   li $v0, 11
   syscall
 
   base_case:
   # reset registers and prepare to jump into hyperspace
   lw $ra, 4($sp)
-  lw $a0, 0($sp)
-  addi $sp, $sp, 8
+  lw $s0, 8($sp)
+  lw $s1, 12($sp)
+  addi $sp, $sp, 16
   jr $ra
