@@ -47,16 +47,17 @@ module test();
 
 	initial begin
 			for(i=0;i<16;i+=1) begin
-  			{op1, op0, data1, data0} = i;
-      	#1
-  			$display("Op code: %b%b data: %b%b output: %b", op1, op0, data1, data0, out);
-
         case (i)
           0: $display("AND");
           4: $display("OR");
           8: $display("XOR");
           12: $display("NOT");
-        end
+        endcase
+  			{op1, op0, data1, data0} = i;
+      	#1
+  			$display("Op code: %b%b data: %b%b output: %b", op1, op0, data1, data0, out);
+
+
 			end
 	end
 endmodule
