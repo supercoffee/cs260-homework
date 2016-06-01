@@ -76,6 +76,8 @@ task_0:
   li $v0, 4
   syscall
 
+  jal task_switcher
+
   j task_0
 
 
@@ -90,5 +92,7 @@ task_1:
   la $a0, task_1_message
   li $v0, 4
   syscall
+
+  jal task_switcher
 
   j task_1
