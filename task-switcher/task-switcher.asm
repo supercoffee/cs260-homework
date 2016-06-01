@@ -62,11 +62,12 @@ task_switcher:
     sw $23, 88($t0)
     sw $24, 92($t0)
     sw $25, 96($t0)
-    sw $26, 100($t0)
-    sw $27, 104($t0)
-    sw $28, 108($t0)
-    sw $29, 112($t0)
-    sw $30, 116($t0)
+    # Don't save special registers because it breaks things
+    # sw $26, 100($t0)
+    # sw $27, 104($t0)
+    # sw $28, 108($t0)
+    # sw $29, 112($t0)
+    # sw $30, 116($t0)
     sw $31, 120($t0)
 
     # save $t0 because it's no
@@ -112,11 +113,12 @@ task_switcher:
     lw $23, 88($t0)
     lw $24, 92($t0)
     lw $25, 96($t0)
-    lw $26, 100($t0)
-    lw $27, 104($t0)
-    lw $28, 108($t0)
-    lw $29, 112($t0)
-    lw $30, 116($t0)
+    # Don't restore special registers because it breaks things
+    # lw $26, 100($t0)
+    # lw $27, 104($t0)
+    # lw $28, 108($t0)
+    # lw $29, 112($t0)
+    # lw $30, 116($t0)
     lw $31, 120($t0)
 
     # restore $t0
