@@ -4,6 +4,9 @@ tcb0: .space 128
 tcb1: .space 128
 tid: .word 0
 
+str0:   .asciiz "123"
+str1:   .asciiz "45678"
+
 task_0_message: .asciiz "Doing shit: (task 0)\n"
 task_1_message: .asciiz "Doing shit: (task 1)\n"
 
@@ -12,18 +15,18 @@ task_1_message: .asciiz "Doing shit: (task 1)\n"
 
 main:
   la $t0, tcb0
-  la $t1, task_0
+  la $t1, task0
   sw $t1, 120($t0)
   move $ra, $t1
 
   la $t0, tcb1
-  la $t1, task_1
+  la $t1, task1
   sw $t1, 120($t0)
 
   #call task switcher
   j task_switcher
 
-
+ts:
 task_switcher:
   addi $sp, $sp, -4
   sw $t0, ($sp)
@@ -131,35 +134,109 @@ task_switcher:
   j $ra
 
 
-task_0:
-  # print important message
-  la $a0, task_0_message
-  li $v0, 4
-  syscall
+# task_0:
+#   # print important message
+#   la $a0, task_0_message
+#   li $v0, 4
+#   syscall
+#
+#   jal task_switcher
+#
+#   la $a0, task_0_message
+#   li $v0, 4
+#   syscall
+#
+#   jal task_switcher
+#
+#   j task_0
+#
+#
+# task_1:
+#   # print important message
+#   la $a0, task_1_message
+#   li $v0, 4
+#   syscall
+#
+#   jal task_switcher
+#
+#   la $a0, task_1_message
+#   li $v0, 4
+#   syscall
+#
+#   jal task_switcher
+#
+#   j task_1
 
-  jal task_switcher
 
-  la $a0, task_0_message
-  li $v0, 4
-  syscall
+  #------------ task0 ---------------
 
-  jal task_switcher
+  task0:
+          add  $t0, $0, $0
+  	jal ts
+          addi $t1, $0, 10
+          la   $s0, str0
+  	jal ts
+  beg0:
+          lb   $t2, ($s0)
+          beq  $t2, $0, quit0
+          sub  $t2, $t2, '0'
+          mult $t0, $t1
+          mflo $t0
+          add  $t0, $t0, $t2
+  	jal ts
+          add  $s0, $s0, 1
+          b    beg0
+  quit0:
+  	jal ts
+  	add  $v1, $0, $t0
+  	add  $s0, $0, $v1
+  	add  $a1, $0, $s0
+  	jal ts
+  	add  $t5, $0, $a1
+  	add  $t6, $0, $t5
+  	addi $s0, $0, 1
+  	add  $v0, $0, $s0
+  	add  $a0, $0, $t6
+  	jal ts
+  	syscall
+          j task0
 
-  j task_0
 
+  #------------ task1 ---------------
 
-task_1:
-  # print important message
-  la $a0, task_1_message
-  li $v0, 4
-  syscall
-
-  jal task_switcher
-
-  la $a0, task_1_message
-  li $v0, 4
-  syscall
-
-  jal task_switcher
-
-  j task_1
+  task1:
+          add  $t0, $0, $0
+          addi $t1, $0, 10
+          la   $s0, str1
+  beg1:
+          lb   $t2, ($s0)
+          beq  $t2, $0, quit1
+  	jal ts
+          sub  $t2, $t2, '0'
+          mult $t0, $t1
+  	addi $t8, $0, 0
+          addi $s5, $t8, 0
+  	add  $t8, $s5, $s5
+          addi $t8, $0, 0
+          addi $s5, $t8, 0
+  	add  $t8, $s5, $s5
+          mflo $t0
+          add  $t0, $t0, $t2
+          add  $s0, $s0, 1
+          b    beg1
+  quit1:
+  	add  $v1, $0, $t0
+  	add  $s0, $0, $v1
+  	jal ts
+  	add  $a1, $0, $s0
+  	add  $t5, $0, $a1
+  	jal ts
+  	add  $t6, $0, $t5
+  	jal ts
+  	addi $s0, $0, 1
+  	add  $v0, $0, $s0
+  	jal ts
+  	add  $a0, $0, $t6
+  	jal ts
+  	syscall
+          j task1
