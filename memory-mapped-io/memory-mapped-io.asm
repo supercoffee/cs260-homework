@@ -19,14 +19,17 @@ main:
     andi    $t0, $t0, CONS_RECEIVER_READY_MASK  # Isolate ready bit
     beqz    $t0, key_wait
 
-  lbu $t0, CONS_RECEIVER_DATA
-  sb $t0, CONS_XMIT_DATA
-
   output_wait:
     lw $t0, CONS_XMIT_CONTROL
     andi $t0, $t0, CONS_RECEIVER_READY_MASK
     beqz $t0, output_wait
-  li $t0, ISO_LF
+
+  lbu $t0, CONS_RECEIVER_DATA
   sb $t0, CONS_XMIT_DATA
 
-  jr      $ra
+  li $t1, ISO_LF
+  beq $t0, $t1, quit
+  b main
+
+  quit:
+    jr      $ra
