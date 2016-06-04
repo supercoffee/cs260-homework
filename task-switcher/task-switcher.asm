@@ -7,9 +7,6 @@ tid: .word 0
 str0:   .asciiz "123"
 str1:   .asciiz "45678"
 
-task_0_message: .asciiz "Doing shit: (task 0)\n"
-task_1_message: .asciiz "Doing shit: (task 1)\n"
-
 .text
 .globl main
 
@@ -24,10 +21,9 @@ main:
   sw $t1, 120($t0)
 
   #call task switcher
-  j task_switcher
+  j ts
 
 ts:
-task_switcher:
   addi $sp, $sp, -4
   sw $t0, ($sp)
   # load address of current TCB into t0
@@ -132,41 +128,6 @@ task_switcher:
 
   # jump to ra
   j $ra
-
-
-# task_0:
-#   # print important message
-#   la $a0, task_0_message
-#   li $v0, 4
-#   syscall
-#
-#   jal task_switcher
-#
-#   la $a0, task_0_message
-#   li $v0, 4
-#   syscall
-#
-#   jal task_switcher
-#
-#   j task_0
-#
-#
-# task_1:
-#   # print important message
-#   la $a0, task_1_message
-#   li $v0, 4
-#   syscall
-#
-#   jal task_switcher
-#
-#   la $a0, task_1_message
-#   li $v0, 4
-#   syscall
-#
-#   jal task_switcher
-#
-#   j task_1
-
 
   #------------ task0 ---------------
 
