@@ -1,3 +1,7 @@
+# Benjamin Daschel
+# CS260 Spring 2016
+# Task switcher
+# Prints "12345678" repeatedly until killed with CTRL+c
 .data
 
 tcb0: .space 128

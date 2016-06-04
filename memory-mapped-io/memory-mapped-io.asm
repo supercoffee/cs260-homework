@@ -1,3 +1,8 @@
+# Ben Daschel
+# CS260 Spring 2016
+# Memory mapped IO
+# Echos keys entered on keyboard exiting when enter is pressed.
+
 .data
 buffer: .space 256
 
