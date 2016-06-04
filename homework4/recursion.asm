@@ -1,3 +1,8 @@
+# Benjamin Daschel
+# CS260 Spring 2016
+# Recursion
+# Print a string backward using recursion
+
 .data
 name: .asciiz "\nBenjamin"
 
